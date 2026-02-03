@@ -1,0 +1,49 @@
+name: helm-to-k8s-demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+          kubectl version --client
+
+      - name: Install Helm
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+          helm version
+
+      - name: Install kind
+        run: |
+          curl -Lo kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-amd64
+          chmod +x kind
+          sudo mv kind /usr/local/bin/kind
+          kind version
+
+      - name: Create cluster
+        run: |
+          kind create cluster --name ci
+          kubectl get nodes
+
+      - name: Deploy chart
+        run: |
+          kubectl create ns demo
+          helm upgrade --install demo ./charts/demo -n demo
+          kubectl get all -n demo
+          # If you know the deployment name:
+          # kubectl rollout status deploy/<your-deploy> -n demo --timeout=180s
+
+      - name: Smoke test (port-forward + curl)
+        run: |
+          # Replace svc name/port as appropriate for your chart
+          kubectl -n demo port-forward svc/demo 8080:80 >/tmp/pf.log 2>&1 &
+          sleep 2
+          curl -f http://127.0.0.1:8080/
