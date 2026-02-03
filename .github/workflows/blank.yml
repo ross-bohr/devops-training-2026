@@ -36,7 +36,7 @@ jobs:
       - name: Deploy chart
         run: |
           kubectl create ns demo
-          helm upgrade --install demo /charts/demo -n demo
+          helm upgrade --install demo ./../../charts/demo -n demo
           kubectl get all -n demo
           # If you know the deployment name:
           # kubectl rollout status deploy/<your-deploy> -n demo --timeout=180s
