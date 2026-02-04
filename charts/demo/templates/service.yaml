@@ -11,6 +11,6 @@ spec:
     app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
   - port: {{ .Values.service.port }}
-    targetPort: 80
+    targetPort: {{ .Values.container.port }}
     protocol: TCP
     name: http
