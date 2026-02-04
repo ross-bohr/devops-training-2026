@@ -82,7 +82,7 @@ jobs:
       - name: Deploy chart
         run: |
           kubectl create ns demo
-          helm upgrade --install demo ./charts/demo -n demo --set image.repository=rossdocker123/simpleapi-demo-2026 --set image.tag=latest
+          helm upgrade --install demo ./charts/demo -n demo --set image.repository=${{ env.DOCKERHUB_REPO }} --set image.tag=latest
           kubectl get all -n demo
           # If you know the deployment name:
           kubectl rollout status deploy/demo-hello-web -n demo --timeout=180s
