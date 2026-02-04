@@ -1,8 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: nginx
-  tag: "1.27-alpine"
+  repository: rossdocker123/simpleapi-demo-2026
+  tag: "latest"
   pullPolicy: IfNotPresent
 
 service:
