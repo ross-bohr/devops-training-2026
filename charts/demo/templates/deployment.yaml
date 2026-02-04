@@ -20,7 +20,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.container.port }}
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu }}
@@ -35,13 +35,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: {{ .Values.container.port }}
           initialDelaySeconds: 2
           periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: {{ .Values.container.port }}
           initialDelaySeconds: 10
           periodSeconds: 10
       volumes:
